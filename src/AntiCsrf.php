@@ -23,6 +23,7 @@ class AntiCSRF
 
     public function tokenIsValid($tokenToCheck)
     {
+        $this->startSession();
         if (empty($_SESSION['SpCsrfToken'])) {
             return false;
         }
