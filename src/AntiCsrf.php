@@ -11,14 +11,14 @@ class AntiCSRF
         }
     }
 
-    //Sets and echoes a "SpCsrfToken" session variable
-    public function storeAndGetToken()
+    //Sets and returns a "SpCsrfToken" session variable
+    public function generateToken()
     {
         $this->startSession();
         $token
             = bin2hex(random_bytes(32));
         $_SESSION['SpCsrfToken'] = $token;
-        echo $token;
+        return $token;
     }
 
     public function tokenIsValid($tokenToCheck)
