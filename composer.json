@@ -1,0 +1,19 @@
+{
+  "name": "spencer14420/sp-anti-csrf",
+  "description": "Can be used to generate and validate anti-CSRF tokens",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Spencer14420\\SpAntiCsrf\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "spencer14420"
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {}
+}
