@@ -5,7 +5,7 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Spencer14420\\SpAntiCsrf\\": "src/"
+      "spencer14420\\SpAntiCsrf\\": "src/"
     }
   },
   "authors": [
