@@ -2,7 +2,7 @@
 
 namespace spencer14420\SpAntiCsrf;
 
-class AntiCSRF
+class AntiCsrf
 {
     private function startSession()
     {
