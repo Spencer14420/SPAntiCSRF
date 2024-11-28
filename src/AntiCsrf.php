@@ -41,7 +41,7 @@ class AntiCsrf
         return $_SESSION[self::CSRF_TOKEN_KEY] ?? null;
     }
 
-    public function tokenIsActive(): bool
+    public function tokenIsNotExpired(): bool
     {
         $this->startSession();
         $token = $this->getToken();
@@ -59,7 +59,7 @@ class AntiCsrf
         }
         
         $this->startSession();
-        if (!$this->tokenIsActive()) {
+        if (!$this->tokenIsNotExpired()) {
             return false;
         }
         
