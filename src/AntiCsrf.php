@@ -24,6 +24,11 @@ class AntiCsrf
         return $token;
     }
 
+    public function tokenHasExpired(): bool
+    {
+        $this->startSession();
+        return empty($_SESSION['SpCsrfToken']) || time() > $_SESSION['SpCsrfToken']['expiry'];
+    }
 
     public function tokenIsValid(string $tokenToCheck): bool
     {
