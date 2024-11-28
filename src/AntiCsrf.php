@@ -41,15 +41,15 @@ class AntiCsrf
         return $_SESSION[self::CSRF_TOKEN_KEY] ?? null;
     }
 
-    public function tokenHasExpired(): bool
+    public function tokenIsActive(): bool
     {
         $this->startSession();
         $token = $this->getToken();
         if (empty($token) || time() > $token['expiry']) {
             unset($_SESSION[self::CSRF_TOKEN_KEY]);
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     public function tokenIsValid(string $tokenToCheck): bool
@@ -59,9 +59,10 @@ class AntiCsrf
         }
         
         $this->startSession();
-        if ($this->tokenHasExpired()) {
+        if (!$this->tokenIsActive()) {
             return false;
         }
+        
         $token = $this->getToken();
         if (!hash_equals($token['value'], $tokenToCheck)) {
             return false;
