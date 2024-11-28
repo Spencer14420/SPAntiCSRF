@@ -8,12 +8,15 @@ class AntiCsrf
 {
     private const CSRF_TOKEN_KEY = 'SpCsrfToken';
 
-    private function startAndRegenerateSession(): void
+    private function startSession(): void
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+    }
 
+    private function regenerateSession(): void
+    {
         // Regenerate session ID if it's been more than 5 minutes since the last regeneration
         $lastRegenerated = $_SESSION['last_regenerated'] ?? 0;
         if (time() - $lastRegenerated > 300) {
@@ -24,7 +27,8 @@ class AntiCsrf
 
     public function generateToken(int $expirySeconds = 3600): string
     {
-        $this->startAndRegenerateSession();
+        $this->startSession();
+        $this->regenerateSession();
         $token = bin2hex(random_bytes(32));
         $_SESSION[self::CSRF_TOKEN_KEY] = [
             'value' => $token,
@@ -40,14 +44,15 @@ class AntiCsrf
 
     public function tokenHasExpired(): bool
     {
-        $this->startAndRegenerateSession();
+        $this->startSession();
         $token = $this->getToken();
         return empty($token) || time() > $token['expiry'];
     }
 
     public function tokenIsValid(string $tokenToCheck): bool
     {
-        $this->startAndRegenerateSession();
+        $this->startSession();
+        $this->regenerateSession();
         if ($this->tokenHasExpired()) {
             return false;
         }
