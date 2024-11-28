@@ -45,7 +45,11 @@ class AntiCsrf
     {
         $this->startSession();
         $token = $this->getToken();
-        return empty($token) || time() > $token['expiry'];
+        if (empty($token) || time() > $token['expiry']) {
+            unset($_SESSION[self::CSRF_TOKEN_KEY]);
+            return true;
+        }
+        return false;
     }
 
     public function tokenIsValid(string $tokenToCheck): bool
