@@ -13,16 +13,17 @@ class AntiCsrf
         }
     }
 
-    public function generateToken(): string
+    public function generateToken(int $expirySeconds = 3600): string
     {
         $this->startSession();
         $token = bin2hex(random_bytes(32));
         $_SESSION['SpCsrfToken'] = [
             'value' => $token,
-            'expiry' => time() + 3600 // Token expires in 1 hour
+            'expiry' => time() + $expirySeconds
         ];
         return $token;
     }
+
 
     public function tokenIsValid(string $tokenToCheck): bool
     {
