@@ -27,6 +27,10 @@ class AntiCsrf
 
     public function generateToken(int $expirySeconds = 3600): string
     {
+        if ($expirySeconds <= 0) {
+            throw new \InvalidArgumentException('Expiry time must be a positive integer.');
+        }
+        
         $this->startSession();
         $this->regenerateSession();
         $token = bin2hex(random_bytes(32));
@@ -51,6 +55,10 @@ class AntiCsrf
 
     public function tokenIsValid(string $tokenToCheck): bool
     {
+        if (empty($tokenToCheck)) {
+            throw new \InvalidArgumentException('Token to check cannot be empty.');
+        }
+        
         $this->startSession();
         $this->regenerateSession();
         if ($this->tokenHasExpired()) {
