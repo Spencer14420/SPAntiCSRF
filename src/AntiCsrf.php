@@ -6,6 +6,8 @@ namespace spencer14420\SpAntiCsrf;
 
 class AntiCsrf
 {
+    private const CSRF_TOKEN_KEY = 'SpCsrfToken';
+
     private function startSession(): void
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -17,7 +19,7 @@ class AntiCsrf
     {
         $this->startSession();
         $token = bin2hex(random_bytes(32));
-        $_SESSION['SpCsrfToken'] = [
+        $_SESSION[self::CSRF_TOKEN_KEY] = [
             'value' => $token,
             'expiry' => time() + $expirySeconds
         ];
@@ -27,18 +29,18 @@ class AntiCsrf
     public function tokenHasExpired(): bool
     {
         $this->startSession();
-        return empty($_SESSION['SpCsrfToken']) || time() > $_SESSION['SpCsrfToken']['expiry'];
+        return empty($_SESSION[self::CSRF_TOKEN_KEY]) || time() > $_SESSION[self::CSRF_TOKEN_KEY]['expiry'];
     }
 
     public function tokenIsValid(string $tokenToCheck): bool
     {
         $this->startSession();
-        if (empty($_SESSION['SpCsrfToken']) || time() > $_SESSION['SpCsrfToken']['expiry']) {
+        if ($this->tokenHasExpired()) {
             return false;
         }
-        $isValid = hash_equals($_SESSION['SpCsrfToken']['value'], $tokenToCheck);
+        $isValid = hash_equals($_SESSION[self::CSRF_TOKEN_KEY]['value'], $tokenToCheck);
         if ($isValid) {
-            unset($_SESSION['SpCsrfToken']);
+            unset($_SESSION[self::CSRF_TOKEN_KEY]);
         }
         return $isValid;
     }
