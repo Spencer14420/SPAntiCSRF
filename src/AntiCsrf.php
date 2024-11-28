@@ -7,6 +7,7 @@ namespace spencer14420\SpAntiCsrf;
 class AntiCsrf
 {
     private const CSRF_TOKEN_KEY = 'SpCsrfToken';
+    private const DEFAULT_EXPIRY_SECONDS = 3600;
 
     private function startSession(): void
     {
@@ -21,7 +22,7 @@ class AntiCsrf
         session_regenerate_id(true);
     }
 
-    public function generateToken(int $expirySeconds = 3600): string
+    public function generateToken(int $expirySeconds = self::DEFAULT_EXPIRY_SECONDS): string
     {
         if ($expirySeconds <= 0) {
             throw new \InvalidArgumentException('Expiry time must be a positive integer.');
@@ -35,8 +36,7 @@ class AntiCsrf
         ];
         return $token;
     }
-
-    private function getToken(): ?array
+    private function getStoredToken(): ?array
     {
         return $_SESSION[self::CSRF_TOKEN_KEY] ?? null;
     }
@@ -44,7 +44,7 @@ class AntiCsrf
     public function tokenIsNotExpired(): bool
     {
         $this->startSession();
-        $token = $this->getToken();
+        $token = $this->getStoredToken();
         if (empty($token) || time() > $token['expiry']) {
             unset($_SESSION[self::CSRF_TOKEN_KEY]);
             return false;
@@ -63,12 +63,14 @@ class AntiCsrf
             return false;
         }
         
-        $token = $this->getToken();
+        $token = $this->getStoredToken();
         if (!hash_equals($token['value'], $tokenToCheck)) {
             return false;
         }
         
         // Invalidate the token after successful validation to prevent reuse
+        // This is important for security because it prevents replay attacks,
+        // where an attacker could reuse a valid token to perform unauthorized actions.
         unset($_SESSION[self::CSRF_TOKEN_KEY]);
         return true;
     }
