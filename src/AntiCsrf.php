@@ -13,7 +13,6 @@ class AntiCsrf
         }
     }
 
-    // Sets and returns a "SpCsrfToken" session variable
     public function generateToken(): string
     {
         $this->startSession();
@@ -28,6 +27,10 @@ class AntiCsrf
         if (empty($_SESSION['SpCsrfToken'])) {
             return false;
         }
-        return hash_equals($_SESSION['SpCsrfToken'], $tokenToCheck);
+        $isValid = hash_equals($_SESSION['SpCsrfToken'], $tokenToCheck);
+        if ($isValid) {
+            unset($_SESSION['SpCsrfToken']);
+        }
+        return $isValid;
     }
 }
