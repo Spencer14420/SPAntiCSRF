@@ -65,11 +65,12 @@ class AntiCsrf
             return false;
         }
         $token = $this->getToken();
-        $isValid = hash_equals($token['value'], $tokenToCheck);
-        if ($isValid) {
-            // Invalidate the token after successful validation to prevent reuse
-            unset($_SESSION[self::CSRF_TOKEN_KEY]);
+        if (!hash_equals($token['value'], $tokenToCheck)) {
+            return false;
         }
-        return $isValid;
+        
+        // Invalidate the token after successful validation to prevent reuse
+        unset($_SESSION[self::CSRF_TOKEN_KEY]);
+        return true;
     }
 }
