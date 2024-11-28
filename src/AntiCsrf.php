@@ -15,14 +15,10 @@ class AntiCsrf
         }
     }
 
-    private function regenerateSession(): void
+    public function regenerateSession(): void
     {
-        // Regenerate session ID if it's been more than 5 minutes since the last regeneration
-        $lastRegenerated = $_SESSION['last_regenerated'] ?? 0;
-        if (time() - $lastRegenerated > 300) {
-            session_regenerate_id(true);
-            $_SESSION['last_regenerated'] = time();
-        }
+        $this->startSession();
+        session_regenerate_id(true);
     }
 
     public function generateToken(int $expirySeconds = 3600): string
@@ -32,7 +28,6 @@ class AntiCsrf
         }
         
         $this->startSession();
-        $this->regenerateSession();
         $token = bin2hex(random_bytes(32));
         $_SESSION[self::CSRF_TOKEN_KEY] = [
             'value' => $token,
@@ -60,7 +55,6 @@ class AntiCsrf
         }
         
         $this->startSession();
-        $this->regenerateSession();
         if ($this->tokenHasExpired()) {
             return false;
         }
