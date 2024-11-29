@@ -1,6 +1,6 @@
-# SpAntiCsrf
+# SPAntiCSRF
 
-SpAntiCsrf is a lightweight PHP package that provides a simple and secure way to handle CSRF (Cross-Site Request Forgery) protection in your web applications. It uses token-based validation to ensure that requests are legitimate.
+SPAntiCSRF is a lightweight PHP package that secures web applications against CSRF attacks using token-based validation.
 
 ## Features
 
@@ -12,7 +12,7 @@ SpAntiCsrf is a lightweight PHP package that provides a simple and secure way to
 
 ## Installation
 
-You can install SpAntiCsrf using Composer:
+You can install SPAntiCSRF using Composer:
 
 ```bash
 composer require spencer14420/sp-anti-csrf
@@ -65,7 +65,7 @@ try {
 
 ### Regenerate the Session
 
-For added security, you can regenerate the session ID periodically or certain actions:
+For added security, you can regenerate the session ID periodically or after certain actions:
 
 ```php
 $csrf->regenerateSession();
@@ -79,7 +79,7 @@ $csrf->regenerateSession();
 generateToken(int $expirySeconds = 3600): string
 ```
 
-Generates a new CSRF token, stores it in a session variable with an optional expiry time (default: 3600 seconds).
+Generates a new CSRF token, and stores it in a session variable with an expiry time (default: 1 hour).
 
 - **Parameters**:
   - `$expirySeconds`: The token's lifetime in seconds.
